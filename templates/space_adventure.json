@@ -1,0 +1,17 @@
+{
+  "title": "Space Adventure",
+  "template": "Captain [name] embarked on a journey to the [adjective] planet [planet_name]. The ship's [noun] malfunctioned as they [verb_past] through an asteroid field. \"[exclamation]!\" shouted the captain, \"We need to [verb] immediately!\" The alien crew members began to [verb] frantically. Eventually, they landed on a [adjective] moon where [plural_noun] roamed freely. It was the most [adjective] adventure in the history of space exploration.",
+  "placeholders": [
+    "name",
+    "adjective",
+    "planet_name",
+    "noun",
+    "verb_past",
+    "exclamation",
+    "verb",
+    "verb",
+    "adjective",
+    "plural_noun",
+    "adjective"
+  ]
+}

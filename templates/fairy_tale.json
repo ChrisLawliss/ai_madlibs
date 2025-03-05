@@ -1,0 +1,22 @@
+{
+  "title": "Once Upon a Time",
+  "template": "Once upon a time, in a [adjective] kingdom, there lived a [noun] named [name]. Every day, they would [verb] by the [adjective] [place]. One day, a [adjective] [magical_creature] appeared and granted them three [plural_noun]. \"[exclamation]!\" they shouted with joy. With their new [plural_noun], [name] decided to [verb] the evil [villain]. After a [adjective] battle, they lived [adverb] ever after.",
+  "placeholders": [
+    "adjective",
+    "noun",
+    "name",
+    "verb",
+    "adjective",
+    "place",
+    "adjective",
+    "magical_creature",
+    "plural_noun",
+    "exclamation",
+    "plural_noun",
+    "name",
+    "verb",
+    "villain",
+    "adjective",
+    "adverb"
+  ]
+}

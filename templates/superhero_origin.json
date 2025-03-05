@@ -1,0 +1,23 @@
+{
+  "title": "Birth of a Hero",
+  "template": "By day, [name] was just an ordinary [occupation], but at night, they became [superhero_name], the most [adjective] superhero in [city_name]! Their superpowers included [verb_ending_in_ing] [adverb] and shooting [plural_noun] from their [body_part]. Their arch-nemesis, [villain_name], was always plotting to [verb] the city's supply of [plural_noun]. With the help of their sidekick, [animal], [superhero_name] always saved the day by using their [adjective] [noun] to [verb] the day!",
+  "placeholders": [
+    "name",
+    "occupation",
+    "superhero_name",
+    "adjective",
+    "city_name",
+    "verb_ending_in_ing",
+    "adverb",
+    "plural_noun",
+    "body_part",
+    "villain_name",
+    "verb",
+    "plural_noun",
+    "animal",
+    "superhero_name",
+    "adjective",
+    "noun",
+    "verb"
+  ]
+}

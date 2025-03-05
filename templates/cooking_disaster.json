@@ -1,0 +1,22 @@
+{
+  "title": "Kitchen Catastrophe",
+  "template": "Today I decided to cook a [adjective] meal for my [relative]. I started by [verb_ending_in_ing] [number] [plural_food] in a [adjective] pan. I accidentally added too much [substance], which made everything smell like [smelly_item]. \"[exclamation]!\" I shouted as the mixture began to [verb]. I tried to fix it by adding a [adjective] [food_item], but that only made it [verb]. In the end, we just ordered [type_of_cuisine] food and [verb_past] while watching [TV_show].",
+  "placeholders": [
+    "adjective",
+    "relative",
+    "verb_ending_in_ing",
+    "number",
+    "plural_food",
+    "adjective",
+    "substance",
+    "smelly_item",
+    "exclamation",
+    "verb",
+    "adjective",
+    "food_item",
+    "verb",
+    "type_of_cuisine",
+    "verb_past",
+    "TV_show"
+  ]
+}

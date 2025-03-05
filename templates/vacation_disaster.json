@@ -1,0 +1,23 @@
+{
+  "title": "Vacation Disaster",
+  "template": "Last summer, my family decided to go on a [adjective] vacation to [place]. We packed our [plural_noun] and headed off in our [adjective] [vehicle]. After [number] hours of traveling, we realized we had forgotten our [important_item]! \"[exclamation]!\" my [family_member] screamed. We stopped at a [adjective] store to buy a new one, but they only had [adjective] ones. The hotel was even worse! The room was full of [plural_noun] and the [room_item] was [verb_ending_in_ing]. We ended up [verb_ending_in_ing] at a nearby [place] instead, which turned out to be the most [adjective] part of our trip.",
+  "placeholders": [
+    "adjective",
+    "place",
+    "plural_noun",
+    "adjective",
+    "vehicle",
+    "number",
+    "important_item",
+    "exclamation",
+    "family_member",
+    "adjective",
+    "adjective",
+    "plural_noun",
+    "room_item",
+    "verb_ending_in_ing",
+    "verb_ending_in_ing",
+    "place",
+    "adjective"
+  ]
+}
