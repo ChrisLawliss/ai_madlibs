@@ -28,15 +28,18 @@ class MadLibsCreator:
         self.create_tab = ttk.Frame(self.notebook)
         self.play_tab = ttk.Frame(self.notebook)
         self.manage_tab = ttk.Frame(self.notebook)
+        self.ai_tab = ttk.Frame(self.notebook)  # New AI tab
         
         self.notebook.add(self.create_tab, text="Create")
         self.notebook.add(self.play_tab, text="Play")
         self.notebook.add(self.manage_tab, text="Manage")
+        self.notebook.add(self.ai_tab, text="AI Generator")  # Add AI tab
         
         # Setup each tab
         self.setup_create_tab()
         self.setup_play_tab()
         self.setup_manage_tab()
+        self.setup_ai_tab()  # Setup AI tab
         
         # Create menu
         self.create_menu()
@@ -160,6 +163,99 @@ class MadLibsCreator:
         
         delete_btn = ttk.Button(buttons_frame, text="Delete", command=self.delete_madlib)
         delete_btn.pack(side=tk.LEFT, padx=5, pady=5)
+    
+    def setup_ai_tab(self):
+        """Setup the AI Generator tab"""
+        # API Key frame
+        api_frame = ttk.LabelFrame(self.ai_tab, text="OpenAI API Key")
+        api_frame.pack(fill=tk.X, padx=10, pady=5)
+        
+        self.api_key_var = tk.StringVar()
+        api_key_entry = ttk.Entry(api_frame, textvariable=self.api_key_var, width=50, show="*")
+        api_key_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
+        
+        # Try to load API key from environment variable
+        if 'OPENAI_API_KEY' in os.environ:
+            self.api_key_var.set(os.environ['OPENAI_API_KEY'])
+        
+        # Toggle button to show/hide API key
+        self.show_key = tk.BooleanVar(value=False)
+        show_key_check = ttk.Checkbutton(api_frame, text="Show", variable=self.show_key, 
+                                         command=lambda: api_key_entry.config(show='' if self.show_key.get() else '*'))
+        show_key_check.pack(side=tk.RIGHT, padx=5, pady=5)
+        
+        # Prompt frame
+        prompt_frame = ttk.LabelFrame(self.ai_tab, text="Describe Your Mad Lib")
+        prompt_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        
+        prompt_instructions = ttk.Label(prompt_frame, 
+                                       text="Describe the theme or story for your Mad Lib. Be specific about the setting, characters, or situation.")
+        prompt_instructions.pack(anchor=tk.W, padx=5, pady=2)
+        
+        self.prompt_text = tk.Text(prompt_frame, wrap=tk.WORD, height=5)
+        self.prompt_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        # Example prompts
+        examples_frame = ttk.LabelFrame(self.ai_tab, text="Example Prompts")
+        examples_frame.pack(fill=tk.X, padx=10, pady=5)
+        
+        examples = [
+            "Create a Mad Lib about a haunted house adventure with ghosts and secret passages.",
+            "Make a funny Mad Lib about someone's first day at a new job.",
+            "Write a Mad Lib about an alien visiting Earth for the first time.",
+            "Create a Mad Lib about a cooking competition that goes hilariously wrong."
+        ]
+        
+        for example in examples:
+            example_btn = ttk.Button(examples_frame, text="Use", 
+                                    command=lambda e=example: self.use_example_prompt(e))
+            example_btn.pack(side=tk.LEFT, padx=5, pady=5)
+            
+            ttk.Label(examples_frame, text=example[:30] + "...").pack(side=tk.LEFT, padx=5, pady=5)
+        
+        # Options frame
+        options_frame = ttk.Frame(self.ai_tab)
+        options_frame.pack(fill=tk.X, padx=10, pady=5)
+        
+        ttk.Label(options_frame, text="Complexity:").pack(side=tk.LEFT, padx=5, pady=5)
+        
+        self.complexity_var = tk.StringVar(value="Medium")
+        complexity_combo = ttk.Combobox(options_frame, textvariable=self.complexity_var, 
+                                       values=["Simple", "Medium", "Complex"], state="readonly", width=10)
+        complexity_combo.pack(side=tk.LEFT, padx=5, pady=5)
+        
+        ttk.Label(options_frame, text="Style:").pack(side=tk.LEFT, padx=5, pady=5)
+        
+        self.style_var = tk.StringVar(value="Funny")
+        style_combo = ttk.Combobox(options_frame, textvariable=self.style_var, 
+                                  values=["Funny", "Serious", "Mysterious", "Educational", "Silly"], state="readonly", width=10)
+        style_combo.pack(side=tk.LEFT, padx=5, pady=5)
+        
+        # Generate button
+        generate_frame = ttk.Frame(self.ai_tab)
+        generate_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        self.generate_btn = ttk.Button(generate_frame, text="Generate Mad Lib Template", 
+                                      command=self.generate_ai_template)
+        self.generate_btn.pack(side=tk.LEFT, padx=5, pady=5)
+        
+        self.status_label = ttk.Label(generate_frame, text="")
+        self.status_label.pack(side=tk.LEFT, padx=10, pady=5, fill=tk.X, expand=True)
+        
+        # Result frame
+        result_frame = ttk.LabelFrame(self.ai_tab, text="Generated Template")
+        result_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        
+        self.result_text = tk.Text(result_frame, wrap=tk.WORD, state=tk.DISABLED)
+        self.result_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        # Buttons frame
+        buttons_frame = ttk.Frame(self.ai_tab)
+        buttons_frame.pack(fill=tk.X, padx=10, pady=5)
+        
+        self.use_template_btn = ttk.Button(buttons_frame, text="Use This Template", 
+                                          command=self.use_generated_template, state=tk.DISABLED)
+        self.use_template_btn.pack(side=tk.RIGHT, padx=5, pady=5)
     
     def extract_placeholders(self):
         template = self.template_text.get("1.0", tk.END).strip()
@@ -774,6 +870,155 @@ class MadLibsCreator:
             if not os.path.exists(filepath):
                 with open(filepath, "w") as file:
                     json.dump(template["data"], file, indent=2)
+
+    def use_example_prompt(self, example):
+        """Use an example prompt"""
+        self.prompt_text.delete("1.0", tk.END)
+        self.prompt_text.insert("1.0", example)
+
+    def generate_ai_template(self):
+        """Generate a Mad Lib template using OpenAI API"""
+        api_key = self.api_key_var.get().strip()
+        if not api_key:
+            messagebox.showwarning("API Key Required", "Please enter your OpenAI API key.")
+            return
+        
+        prompt = self.prompt_text.get("1.0", tk.END).strip()
+        if not prompt:
+            messagebox.showwarning("Prompt Required", "Please enter a description for your Mad Lib.")
+            return
+        
+        complexity = self.complexity_var.get()
+        style = self.style_var.get()
+        
+        # Update UI to show we're working
+        self.generate_btn.config(state=tk.DISABLED)
+        self.status_label.config(text="Generating template... Please wait.")
+        self.root.update()
+        
+        try:
+            # Import here to avoid requiring the package if not using this feature
+            import requests
+            import json
+            
+            # Prepare the API request
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}"
+            }
+            
+            # Create the system prompt
+            system_prompt = f"""You are a creative Mad Libs template generator. 
+Create a {complexity.lower()} complexity, {style.lower()}-style Mad Lib template based on the user's description.
+
+Your response should be in JSON format with the following structure:
+{{
+  "title": "Title of the Mad Lib",
+  "template": "The template text with [placeholder] words in brackets",
+  "placeholders": ["placeholder1", "placeholder2", ...]
+}}
+
+Guidelines:
+1. Use [noun], [verb], [adjective], etc. for placeholders
+2. Be specific with placeholders like [animal], [color], [food], etc.
+3. Include 10-20 placeholders depending on complexity
+4. Make sure each placeholder in the template is also in the placeholders list
+5. The template should be coherent and fun to play
+6. Ensure the story makes sense when placeholders are filled in
+7. Use creative and varied placeholders
+"""
+            
+            # Prepare the API request data
+            data = {
+                "model": "gpt-3.5-turbo",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.7
+            }
+            
+            # Make the API request
+            response = requests.post("https://api.openai.com/v1/chat/completions", 
+                                    headers=headers, data=json.dumps(data))
+            
+            if response.status_code == 200:
+                result = response.json()
+                content = result["choices"][0]["message"]["content"]
+                
+                # Try to parse the JSON response
+                try:
+                    # Find JSON in the response (in case there's additional text)
+                    import re
+                    json_match = re.search(r'({[\s\S]*})', content)
+                    if json_match:
+                        content = json_match.group(1)
+                    
+                    template_data = json.loads(content)
+                    
+                    # Validate the template data
+                    if "title" not in template_data or "template" not in template_data or "placeholders" not in template_data:
+                        raise ValueError("Missing required fields in template data")
+                    
+                    # Store the generated template
+                    self.generated_template = template_data
+                    
+                    # Display the template
+                    self.result_text.config(state=tk.NORMAL)
+                    self.result_text.delete("1.0", tk.END)
+                    self.result_text.insert("1.0", f"Title: {template_data['title']}\n\n")
+                    self.result_text.insert(tk.END, f"Template:\n{template_data['template']}\n\n")
+                    self.result_text.insert(tk.END, f"Placeholders:\n{', '.join(template_data['placeholders'])}")
+                    self.result_text.config(state=tk.DISABLED)
+                    
+                    # Enable the use template button
+                    self.use_template_btn.config(state=tk.NORMAL)
+                    
+                    self.status_label.config(text="Template generated successfully!")
+                except Exception as e:
+                    self.status_label.config(text=f"Error parsing response: {str(e)}")
+                    messagebox.showerror("Error", f"Failed to parse the generated template: {str(e)}")
+            else:
+                error_msg = f"API Error: {response.status_code}"
+                try:
+                    error_data = response.json()
+                    if "error" in error_data and "message" in error_data["error"]:
+                        error_msg = f"API Error: {error_data['error']['message']}"
+                except:
+                    pass
+                
+                self.status_label.config(text=error_msg)
+                messagebox.showerror("API Error", error_msg)
+        except Exception as e:
+            self.status_label.config(text=f"Error: {str(e)}")
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+        finally:
+            # Re-enable the generate button
+            self.generate_btn.config(state=tk.NORMAL)
+
+    def use_generated_template(self):
+        """Use the generated template in the Create tab"""
+        if not hasattr(self, 'generated_template'):
+            return
+        
+        # Load the template into the current madlib
+        self.current_madlib = self.generated_template.copy()
+        
+        # Update UI
+        self.title_entry.delete(0, tk.END)
+        self.title_entry.insert(0, self.generated_template["title"])
+        
+        self.template_text.delete("1.0", tk.END)
+        self.template_text.insert("1.0", self.generated_template["template"])
+        
+        self.placeholders_list.delete(0, tk.END)
+        for p in self.generated_template["placeholders"]:
+            self.placeholders_list.insert(tk.END, p)
+        
+        # Switch to create tab
+        self.notebook.select(0)
+        
+        messagebox.showinfo("Success", "Generated template loaded into the Create tab. You can now edit it if needed.")
 
 def main():
     root = tk.Tk()
